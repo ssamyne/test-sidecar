@@ -1,0 +1,121 @@
+{
+  "build": {
+    "beforeBuildCommand": "vite build",
+    "beforeDevCommand": "cross-env GENERATE_SOURCEMAP=false BROWSER=none npm run start",
+    "devPath": "http://localhost:8080",
+    "distDir": "../build.",
+    "withGlobalTauri": true
+  },
+  "package": {
+    "productName": "test-sidecar",
+    "version": "0.0.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "http": {
+        "all": true,
+        "request": true,
+        "scope": ["https://**", "http://**"]
+      },
+      "app": {
+        "all": true,
+        "show": true,
+        "hide": true
+      },
+      "path": {
+        "all": true
+      },
+      "os": {
+        "all": true
+      },
+      "globalShortcut": {
+        "all": true
+      },
+      "window": {
+        "all": false,
+        "center": false,
+        "close": true,
+        "create": false,
+        "hide": false,
+        "maximize": true,
+        "minimize": true,
+        "print": false,
+        "requestUserAttention": false,
+        "setAlwaysOnTop": false,
+        "setCursorGrab": false,
+        "setCursorIcon": false,
+        "setCursorPosition": false,
+        "setCursorVisible": false,
+        "setDecorations": true,
+        "setFocus": true,
+        "setFullscreen": true,
+        "setIcon": false,
+        "setMaxSize": false,
+        "setMinSize": false,
+        "setPosition": false,
+        "setResizable": false,
+        "setSize": true,
+        "setSkipTaskbar": false,
+        "setTitle": false,
+        "show": false,
+        "startDragging": true,
+        "unmaximize": true,
+        "unminimize": true
+      },
+      "dialog": {
+        "all": true
+      },
+      "shell": {
+        "all": true,
+        "execute": true,
+        "open": true,
+        "sidecar": true,
+        "scope": [
+          {
+            "name": "bin/python/test",
+            "sidecar": true
+          }
+        ]
+      },
+      "fs": {
+        "all": false,
+        "copyFile": false,
+        "createDir": true,
+        "exists": true,
+        "readDir": true,
+        "readFile": true,
+        "removeDir": false,
+        "removeFile": true,
+        "renameFile": false,
+        "scope": {
+          "allow": ["$APP/*", "$DOCUMENT/*", "$DOWNLOAD/*", "$APPDATA/*", "$APPCONFIG/*"]
+        },
+        "writeFile": true
+      }
+    },
+    "windows": [
+      {
+        "title": "test-sidecar",
+        "width": 800,
+        "height": 600
+      }
+    ],
+    "security": {
+      "csp": null
+    },
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "com.test.dev",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "externalBin": ["bin/python/test"]
+    }
+  }
+}
