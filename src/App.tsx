@@ -10,6 +10,7 @@ import { invoke } from '@tauri-apps/api/tauri'
 function App() {
   const [greetMsg, setGreetMsg] = useState('')
   const [name, setName] = useState('')
+  const [count, setCount] = useState<string>('0')
 
   async function greet() {
     const command = Command.sidecar('bin/python/test')
@@ -19,19 +20,33 @@ function App() {
     setGreetMsg(`Hello ${stdout} ${name}`)
   }
 
-  // useLayoutEffect(() => {
-  //   async function callTestAppHandle() {
-  //     try {
-  //       // Invoke the backend command
-  //       await invoke('test_app_handle')
-  //       console.log('Command executed successfully.')
-  //     } catch (error) {
-  //       console.error('Failed to invoke command:', error)
-  //     }
-  //   }
-  //   callTestAppHandle()
-  // }, [])
+  useLayoutEffect(() => {
+    async function callTestAppHandle() {
+      try {
+        await listen<Payload>('event-name', (event) => {
+          setCount(event.payload.message)
+        })
+      } catch (error) {
+        console.error('Failed to invoke command:', error)
+      }
+    }
+    callTestAppHandle()
+  }, [])
 
+  const openThread = async () => {
+    await invoke('init_process', {
+      serialPort: 'COM1',
+      baudRate: '9600',
+      byteSize: '8',
+      parity: '10',
+      stopBits: '9',
+      timeout: '1000',
+    })
+  }
+
+  const stopThread = async () => {
+    await invoke('stop_process')
+  }
   // same type as payload
   type Payload = {
     message: string
@@ -39,10 +54,6 @@ function App() {
 
   async function startSerialEventListener() {
     console.log('run')
-
-    await listen<Payload>('event-name', (event) => {
-      console.log('Event triggered from rust!\nPayload: ' + event.payload.message)
-    })
   }
 
   // async function greet() {
@@ -67,7 +78,7 @@ function App() {
       </div>
 
       <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
+      <p>app online for : {count}</p>
       <form
         className='row'
         onSubmit={(e) => {
@@ -82,7 +93,8 @@ function App() {
         />
         <button type='submit'>Greet</button>
       </form>
-      <button onClick={() => startSerialEventListener()}>Greet</button>
+      <button onClick={() => openThread()}>start</button>
+      <button onClick={() => stopThread()}>stop</button>
       <p>{greetMsg}</p>
     </div>
   )
